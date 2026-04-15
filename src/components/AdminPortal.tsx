@@ -10,27 +10,40 @@ export default function AdminPortal({ isAdmin }: { isAdmin: boolean }) {
   const [loading, setLoading] = useState(false);
   const escCount = useRef(0);
   const escTimer = useRef<NodeJS.Timeout | null>(null);
+  const tapCount = useRef(0);
+  const tapTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         escCount.current += 1;
-        
         if (escTimer.current) clearTimeout(escTimer.current);
-        
         if (escCount.current >= 5) {
           setShowLogin(true);
           escCount.current = 0;
         } else {
-          escTimer.current = setTimeout(() => {
-            escCount.current = 0;
-          }, 2000);
+          escTimer.current = setTimeout(() => { escCount.current = 0; }, 2000);
         }
       }
     };
 
+    const handleTap = () => {
+      tapCount.current += 1;
+      if (tapTimer.current) clearTimeout(tapTimer.current);
+      if (tapCount.current >= 5) {
+        setShowLogin(true);
+        tapCount.current = 0;
+      } else {
+        tapTimer.current = setTimeout(() => { tapCount.current = 0; }, 2000);
+      }
+    };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('click', handleTap);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('click', handleTap);
+    };
   }, []);
 
   const handleLogin = async () => {

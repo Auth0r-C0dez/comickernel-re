@@ -59,11 +59,11 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
   return (
     <div className="space-y-6">
       <div className="glass overflow-hidden !p-0">
-        <div className="table-scroll-hint scrollbar-hide">
-          <table className="w-full text-left border-collapse min-w-[850px] md:min-w-0">
+        <div className="scroll-lock scrollbar-hide">
+          <table className="w-full text-left border-collapse table-auto min-w-max">
             <thead>
               <tr className="border-b border-white/5 bg-white/[0.03]">
-                <th className="!py-4 !px-6 text-[10px] uppercase tracking-[0.2em] text-secondary font-black opacity-60">Timestamp</th>
+                <th className="sticky-col !py-4 !px-6 text-[10px] uppercase tracking-[0.2em] text-secondary font-black opacity-60">Timestamp</th>
                 {['Sangam', 'Chetak', 'Super', 'MP Deluxe', 'Bhagya', 'Diamond'].map(h => (
                   <th key={h} className="!py-4 !px-4 text-[10px] uppercase tracking-[0.2em] text-secondary font-black opacity-60">{h}</th>
                 ))}
@@ -73,17 +73,17 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
             <tbody className="divide-y divide-white/[0.03]">
               {results.map((res) => (
                 <tr key={res.id} className="group hover:bg-white/[0.02] transition-colors">
-                  <td className="!py-5 !px-6">
+                  <td className="sticky-col !py-5 !px-6 leading-none">
                     {editingId === res.id ? (
                       <input
                         type="text"
                         value={editForm?.draw_time}
                         onChange={(e) => setEditForm(prev => prev ? ({ ...prev, draw_time: e.target.value }) : null)}
-                        className="w-full min-w-[100px] !px-4 !py-3 bg-black/60 border-white/10 rounded-lg text-xs font-bold focus:border-white/30"
+                        className="w-full min-w-[90px] !px-3 !py-2 bg-black/60 border-white/10 rounded-lg text-xs font-bold focus:border-white/30"
                       />
                     ) : (
                       <div className="flex items-center gap-3">
-                        <Clock size={14} className="opacity-20" />
+                        <Clock size={12} className="opacity-20" />
                         <span className="text-xs font-black text-white tracking-tight">{res.draw_time}</span>
                       </div>
                     )}
@@ -95,10 +95,10 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
                           type="text"
                           value={(editForm as any)?.[key]}
                           onChange={(e) => setEditForm(prev => prev ? ({ ...prev, [key]: e.target.value }) : null)}
-                          className="w-full min-w-[140px] !px-4 !py-3 bg-black/60 border-white/10 rounded-lg text-xs text-center focus:border-white/30"
+                          className="w-full min-w-[120px] lg:min-w-[75px] !px-3 !py-2 bg-black/60 border-white/10 rounded-lg text-xs text-center focus:border-white/30"
                         />
                       ) : (
-                        <div className="text-sm font-mono opacity-60 group-hover:opacity-100 transition-opacity whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px]">
+                        <div className="text-sm font-mono opacity-60 group-hover:opacity-100 transition-opacity whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px] lg:max-w-[100px]">
                           {(res as any)[key] || '--'}
                         </div>
                       )}
@@ -109,13 +109,13 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
                       <div className="flex items-center force-button-gap">
                         {editingId === res.id ? (
                           <>
-                            <button onClick={handleSave} className="text-green-400 hover:scale-110 transition-all !p-2"><Check size={20} /></button>
-                            <button onClick={() => setEditingId(null)} className="text-red-400 hover:scale-110 transition-all !p-2"><X size={20} /></button>
+                            <button onClick={handleSave} title="Save" className="text-green-400 hover:scale-110 transition-all !p-2"><Check size={18} /></button>
+                            <button onClick={() => setEditingId(null)} title="Cancel" className="text-red-400 hover:scale-110 transition-all !p-2"><X size={18} /></button>
                           </>
                         ) : (
                           <>
-                            <button onClick={() => handleEdit(res)} className="opacity-20 hover:opacity-100 hover:text-blue-400 transition-all !p-2"><Edit2 size={16} /></button>
-                            <button onClick={() => handleDelete(res.id!)} className="opacity-20 hover:opacity-100 hover:text-red-500 transition-all !p-2"><Trash2 size={16} /></button>
+                            <button onClick={() => handleEdit(res)} title="Edit" className="opacity-20 hover:opacity-100 hover:text-blue-400 transition-all !p-2"><Edit2 size={16} /></button>
+                            <button onClick={() => handleDelete(res.id!)} title="Delete" className="opacity-20 hover:opacity-100 hover:text-red-500 transition-all !p-2"><Trash2 size={16} /></button>
                           </>
                         )}
                       </div>
@@ -125,13 +125,13 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
               ))}
               {editingId === 'new' && (
                 <tr className="bg-white/[0.05] animate-in fade-in slide-in-from-top-4">
-                  <td className="!py-6 !px-6">
+                  <td className="sticky-col !py-6 !px-6 leading-none">
                     <input
                       type="text"
                       placeholder="HH:MM AM"
                       value={editForm?.draw_time}
                       onChange={(e) => setEditForm(prev => prev ? ({ ...prev, draw_time: e.target.value }) : null)}
-                      className="w-full min-w-[100px] !px-4 !py-3 bg-black/70 border-white/20 rounded-lg text-xs font-bold"
+                      className="w-full min-w-[90px] !px-3 !py-2 bg-black/70 border-white/20 rounded-lg text-xs font-bold"
                     />
                   </td>
                   {['sangam', 'chetak', 'super', 'mp_deluxe', 'bhagya_rekha', 'diamond'].map((key) => (
@@ -141,14 +141,14 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
                         placeholder="--"
                         value={(editForm as any)?.[key]}
                         onChange={(e) => setEditForm(prev => prev ? ({ ...prev, [key]: e.target.value }) : null)}
-                        className="w-full min-w-[140px] !px-4 !py-3 bg-black/70 border-white/20 rounded-lg text-xs text-center"
+                        className="w-full min-w-[120px] lg:min-w-[75px] !px-3 !py-2 bg-black/70 border-white/20 rounded-lg text-xs text-center"
                       />
                     </td>
                   ))}
                   <td className="!py-6 !px-4">
                     <div className="flex items-center force-button-gap">
-                      <button onClick={handleSave} className="text-green-400 hover:scale-110 transition-all !p-3 bg-white/5 rounded-full"><Check size={22} /></button>
-                      <button onClick={() => setEditingId(null)} className="text-red-400 hover:scale-110 transition-all !p-3 bg-white/5 rounded-full"><X size={22} /></button>
+                      <button onClick={handleSave} className="text-green-400 hover:scale-110 transition-all !p-2 bg-white/5 rounded-full"><Check size={20} /></button>
+                      <button onClick={() => setEditingId(null)} className="text-red-400 hover:scale-110 transition-all !p-2 bg-white/5 rounded-full"><X size={20} /></button>
                     </div>
                   </td>
                 </tr>

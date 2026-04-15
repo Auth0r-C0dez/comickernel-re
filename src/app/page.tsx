@@ -70,18 +70,20 @@ export default async function Home({
         </div>
 
         {/* Data Table */}
-        {results.length > 0 ? (
-          <ResultTable initialResults={results} date={selectedDate} adminMode={admin} />
-        ) : (
-          <div className="glass !py-14 text-center">
-            <p className="text-secondary text-sm opacity-40">No results for this date.</p>
-            {admin && (
-              <div className="mt-6">
-                <ResultTable initialResults={[]} date={selectedDate} adminMode={admin} />
-              </div>
-            )}
-          </div>
-        )}
+        <section className="relative">
+          {results.length > 0 ? (
+            <ResultTable initialResults={results} date={selectedDate} adminMode={admin} />
+          ) : (
+            <div className="glass !py-14 text-center">
+              <p className="text-secondary text-sm opacity-40">No results for this date.</p>
+              {admin && (
+                <div className="mt-8">
+                  <ResultTable initialResults={[]} date={selectedDate} adminMode={admin} />
+                </div>
+              )}
+            </div>
+          )}
+        </section>
 
         <div className="force-spacer" />
 
