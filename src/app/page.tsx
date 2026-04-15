@@ -2,16 +2,20 @@ import { isAdmin, getResults } from './actions';
 import ResultTable from '@/components/ResultTable';
 import AdminPortal from '@/components/AdminPortal';
 import VisitorId from '@/components/VisitorId';
-import { Search } from 'lucide-react';
+import { Search, Calendar, Database } from 'lucide-react';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { date?: string };
+  searchParams: Promise<{ date?: string }>;
 }) {
+  const { date } = await searchParams;
   const admin = await isAdmin();
   const today = new Date(new Date().getTime() + 5.5 * 60 * 60 * 1000).toISOString().split('T')[0];
-  const selectedDate = searchParams.date || today;
+  const selectedDate = date || today;
   const results = await getResults(selectedDate);
 
   return (
@@ -47,7 +51,7 @@ export default async function Home({
 
           <div className="hidden sm:flex items-center gap-2 bg-white/5 !px-3 !py-1 rounded-full border border-white/5">
             <div className="w-1.5 h-1.5 rounded-full bg-green-500/60" />
-            <span className="text-[9px] font-mono opacity-40 uppercase tracking-widest">Online</span>
+            <span className="text-[9px] font-mono opacity-40 uppercase tracking-widest">Live Sync</span>
           </div>
         </div>
 
@@ -58,13 +62,13 @@ export default async function Home({
           <div className="flex items-center gap-3">
             <div className="h-[1px] w-6 bg-white/20" />
             <h2 className="text-xs uppercase tracking-widest font-bold opacity-70">
-              Results — {selectedDate}
+              Session — {selectedDate}
             </h2>
           </div>
           {admin && (
             <div className="flex items-center gap-2">
               <span className="animate-pulse w-1.5 h-1.5 rounded-full bg-red-500" />
-              <span className="text-[9px] font-bold text-red-400 uppercase tracking-widest">Admin</span>
+              <span className="text-[9px] font-bold text-red-400 uppercase tracking-widest">Admin Control</span>
             </div>
           )}
         </div>
@@ -75,7 +79,10 @@ export default async function Home({
             <ResultTable initialResults={results} date={selectedDate} adminMode={admin} />
           ) : (
             <div className="glass !py-14 text-center">
-              <p className="text-secondary text-sm opacity-40">No results for this date.</p>
+              <div className="flex justify-center mb-4 opacity-10">
+                <Database size={40} />
+              </div>
+              <p className="text-secondary text-sm opacity-40">No record sequences found for {selectedDate}</p>
               {admin && (
                 <div className="mt-8">
                   <ResultTable initialResults={[]} date={selectedDate} adminMode={admin} />
@@ -92,7 +99,7 @@ export default async function Home({
           <div className="container flex justify-between items-center gap-4 flex-wrap">
             <div className="flex items-center gap-2">
               <div className="w-1 h-1 rounded-full bg-green-500/60" />
-              <span className="text-[9px] uppercase font-bold tracking-widest opacity-30">Live</span>
+              <span className="text-[9px] uppercase font-bold tracking-widest opacity-30">Network Status: Online</span>
             </div>
 
             <div className="flex items-center gap-3">
