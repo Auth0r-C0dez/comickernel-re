@@ -36,8 +36,8 @@ export async function getResults(date: string) {
       args: [date]
     });
     return rs.rows as unknown as LotteryResult[];
-  } catch (error) {
-    console.error('Database fetch failed:', error);
+  } catch (error: any) {
+    console.error('Database fetch failed for date:', date, 'Error:', error.message);
     return [];
   }
 }
