@@ -10,7 +10,7 @@ export default async function Home({
   searchParams: { date?: string };
 }) {
   const admin = await isAdmin();
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date(new Date().getTime() + 5.5 * 60 * 60 * 1000).toISOString().split('T')[0];
   const selectedDate = searchParams.date || today;
   const results = await getResults(selectedDate);
 

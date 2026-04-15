@@ -98,7 +98,7 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
                           className="w-full min-w-[120px] lg:min-w-[75px] !px-3 !py-2 bg-black/60 border-white/10 rounded-lg text-xs text-center focus:border-white/30"
                         />
                       ) : (
-                        <div className="text-sm font-mono opacity-60 group-hover:opacity-100 transition-opacity whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px] lg:max-w-[100px]">
+                        <div className="text-sm font-mono font-bold text-white transition-opacity whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px] lg:max-w-[100px]">
                           {(res as any)[key] || '--'}
                         </div>
                       )}
