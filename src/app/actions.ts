@@ -4,10 +4,9 @@ import { db, type LotteryResult } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
-const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'admin123';
-
 export async function loginAdmin(password: string) {
-  if (password === ADMIN_PASS) {
+  const ADMIN_PASS = (process.env.ADMIN_PASSWORD || 'admin123').trim();
+  if (password.trim() === ADMIN_PASS) {
     const cookieStore = await cookies();
     cookieStore.set('admin_session', 'true', { 
       httpOnly: true, 
@@ -31,11 +30,16 @@ export async function isAdmin() {
 }
 
 export async function getResults(date: string) {
-  const rs = await db.execute({
-    sql: 'SELECT * FROM results WHERE date = ? ORDER BY draw_time ASC',
-    args: [date]
-  });
-  return rs.rows as unknown as LotteryResult[];
+  try {
+    const rs = await db.execute({
+      sql: 'SELECT * FROM results WHERE date = ? ORDER BY draw_time ASC',
+      args: [date]
+    });
+    return rs.rows as unknown as LotteryResult[];
+  } catch (error) {
+    console.error('Database fetch failed:', error);
+    return [];
+  }
 }
 
 export async function upsertResult(data: LotteryResult) {

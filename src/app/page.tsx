@@ -2,7 +2,9 @@ import { isAdmin, getResults } from './actions';
 import ResultTable from '@/components/ResultTable';
 import AdminPortal from '@/components/AdminPortal';
 import VisitorId from '@/components/VisitorId';
-import { Search } from 'lucide-react';
+import { Search, Calendar, ShieldCheck, Activity } from 'lucide-react';
+
+export const dynamic = 'force-dynamic';
 
 export default async function Home({
   searchParams,
@@ -15,89 +17,114 @@ export default async function Home({
   const results = await getResults(selectedDate);
 
   return (
-    <main className="min-h-screen pb-24">
-      <div className="container py-10">
+    <main className="min-h-screen pb-32 animate-entrance">
+      <div className="container !py-10">
 
-        {/* Header */}
-        <header className="flex flex-col items-center text-center mb-2">
-          <h1 className="uppercase tracking-tight leading-none">Play India Lottery</h1>
-          <p className="text-secondary opacity-50 max-w-md mx-auto mt-1 text-xs">
-            Daily Result Chart
-          </p>
+        {/* --- Header Section --- */}
+        <header className="relative flex flex-col items-center text-center space-y-4 mb-12">
+          <div className="inline-flex items-center gap-2 !px-4 !py-1.5 rounded-full bg-white/5 border border-white/5 backdrop-blur-md">
+            <Activity size={12} className="text-secondary animate-pulse" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-secondary opacity-70">Live Distribution Network</span>
+          </div>
+          
+          <div className="space-y-2">
+            <h1 className="uppercase tracking-tighter">
+              Play India <span className="opacity-30">Lottery</span>
+            </h1>
+            <p className="text-secondary opacity-40 max-w-sm mx-auto text-[11px] uppercase tracking-[0.3em] font-medium">
+              Real-Time Result Protocol
+            </p>
+          </div>
         </header>
 
-        <div className="force-spacer" />
+        <div className="force-spacer-sm" />
 
-        {/* Control Bar */}
-        <div className="glass control-bar !py-4 !px-5 flex flex-wrap items-center justify-between gap-6">
-          <div className="control-row flex items-center gap-4 flex-wrap">
-            <span className="text-[10px] font-bold text-secondary uppercase tracking-widest opacity-50">Select Date</span>
-            <form action="/" method="GET" className="flex items-center gap-3">
-              <input
-                type="date"
-                name="date"
-                defaultValue={selectedDate}
-                className="!py-2 !px-3 text-xs font-mono"
-              />
-              <button type="submit" className="btn btn-sm">
-                <Search size={13} /> Search
-              </button>
-            </form>
-          </div>
-
-          <div className="hidden sm:flex items-center gap-2 bg-white/5 !px-3 !py-1 rounded-full border border-white/5">
-            <div className="w-1.5 h-1.5 rounded-full bg-green-500/60" />
-            <span className="text-[9px] font-mono opacity-40 uppercase tracking-widest">Online</span>
-          </div>
-        </div>
-
-        <div className="force-spacer" />
-
-        {/* Results Header */}
-        <div className="flex items-center justify-between !px-1 mb-3">
-          <div className="flex items-center gap-3">
-            <div className="h-[1px] w-6 bg-white/20" />
-            <h2 className="text-xs uppercase tracking-widest font-bold opacity-70">
-              Results — {selectedDate}
-            </h2>
-          </div>
-          {admin && (
-            <div className="flex items-center gap-2">
-              <span className="animate-pulse w-1.5 h-1.5 rounded-full bg-red-500" />
-              <span className="text-[9px] font-bold text-red-400 uppercase tracking-widest">Admin</span>
+        {/* --- Dashboard Controls --- */}
+        <div className="glass !p-2 mb-8">
+          <div className="flex flex-wrap items-center justify-between gap-4 !p-4">
+            <div className="flex items-center gap-6 flex-wrap">
+              <div className="flex items-center gap-3">
+                <Calendar size={16} className="opacity-30" />
+                <span className="text-[11px] font-black text-secondary uppercase tracking-widest opacity-60">Archive Query</span>
+              </div>
+              
+              <form action="/" method="GET" className="flex items-center gap-3">
+                <input
+                  type="date"
+                  name="date"
+                  defaultValue={selectedDate}
+                  className="!py-2 !px-4 text-xs font-mono bg-white/5 border-white/10 rounded-lg focus:ring-1 focus:ring-white/20 transition-all"
+                />
+                <button type="submit" className="btn btn-primary !py-2 !px-4 h-full">
+                  <Search size={14} className="mr-2" /> <span className="text-[10px] uppercase font-bold">Search</span>
+                </button>
+              </form>
             </div>
-          )}
+
+            <div className="hidden lg:flex items-center gap-4 bg-white/5 !px-4 !py-2 rounded-xl border border-white/5">
+              <div className="flex flex-col items-end">
+                <span className="text-[9px] font-bold opacity-30 uppercase tracking-tighter">Node Status</span>
+                <span className="text-[10px] font-mono text-green-500 uppercase font-black">Operational</span>
+              </div>
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+            </div>
+          </div>
         </div>
 
-        {/* Data Table */}
-        <section className="relative">
-          {results.length > 0 ? (
-            <ResultTable initialResults={results} date={selectedDate} adminMode={admin} />
-          ) : (
-            <div className="glass !py-14 text-center">
-              <p className="text-secondary text-sm opacity-40">No results for this date.</p>
-              {admin && (
-                <div className="mt-8">
-                  <ResultTable initialResults={[]} date={selectedDate} adminMode={admin} />
+        <div className="force-spacer-sm" />
+
+        {/* --- Results Display --- */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between !px-2">
+            <div className="flex items-center gap-4">
+              <div className="w-8 h-[1px] bg-white/20" />
+              <h2 className="text-[11px] uppercase tracking-[0.4em] font-black opacity-80 flex items-center gap-3">
+                Session <span className="opacity-30">/</span> {selectedDate}
+              </h2>
+            </div>
+            
+            {admin && (
+              <div className="flex items-center gap-3 !px-3 !py-1.5 rounded-lg bg-red-500/10 border border-red-500/20">
+                <ShieldCheck size={14} className="text-red-500" />
+                <span className="text-[10px] font-black text-red-500 uppercase tracking-widest">Administrator</span>
+              </div>
+            )}
+          </div>
+
+          <div className="relative">
+            {results.length > 0 ? (
+              <ResultTable initialResults={results} date={selectedDate} adminMode={admin} />
+            ) : (
+              <div className="glass !py-24 text-center space-y-4">
+                <div className="opacity-10 scale-150 mb-4 inline-block">
+                  <Activity size={48} strokeWidth={1} />
                 </div>
-              )}
-            </div>
-          )}
+                <p className="text-secondary text-xs uppercase tracking-widest opacity-40 font-bold">No Records Found for this Sequence</p>
+                {admin && (
+                  <div className="max-w-4xl mx-auto !px-4">
+                    <ResultTable initialResults={[]} date={selectedDate} adminMode={admin} />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </section>
 
         <div className="force-spacer" />
 
-        {/* Footer */}
-        <footer className="fixed bottom-0 left-0 right-0 glass border-t border-white/5 !py-2 z-40" style={{ borderRadius: 0 }}>
-          <div className="container flex justify-between items-center gap-4 flex-wrap">
-            <div className="flex items-center gap-2">
-              <div className="w-1 h-1 rounded-full bg-green-500/60" />
-              <span className="text-[9px] uppercase font-bold tracking-widest opacity-30">Live</span>
+        {/* --- Persistent Navigation (Monochrome) --- */}
+        <footer className="fixed bottom-0 left-0 right-0 glass !p-0 z-50 border-t border-white/10" style={{ borderRadius: 0 }}>
+          <div className="container !py-3 flex justify-between items-center gap-6 flex-wrap">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-[10px] uppercase font-black tracking-[0.2em] opacity-40">System Synchronized</span>
+              </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-6">
               <VisitorId />
-              <div className="h-3 w-[1px] bg-white/10" />
+              <div className="h-4 w-[1px] bg-white/10" />
               <AdminPortal isAdmin={admin} />
             </div>
           </div>
