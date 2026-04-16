@@ -72,66 +72,63 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
   return (
     <div className="space-y-6">
       <div 
-        className="glass overflow-hidden !p-0"
+        className="overflow-x-auto rounded-lg border border-white/10"
         ref={tableContainerRef}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <div className="scroll-lock scrollbar-hide">
-          <table className="w-full text-left border-collapse table-auto min-w-max">
-            <thead>
-              <tr className="border-b border-white/5 bg-white/[0.03]">
-                <th className="sticky-col !py-4 !px-6 text-[10px] uppercase tracking-[0.2em] text-secondary font-black opacity-60">Timestamp</th>
-                {['Sangam', 'Chetak', 'Super', 'MP Deluxe', 'Bhagya', 'Diamond'].map(h => (
-                  <th key={h} className="!py-4 !px-4 text-[10px] uppercase tracking-[0.2em] text-secondary font-black opacity-60">{h}</th>
-                ))}
-                {adminMode && <th className="!py-4 !px-4 text-[10px] uppercase tracking-[0.2em] text-secondary font-black opacity-60">Control</th>}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/[0.03]">
+        <table className="w-full table-simple">
+          <thead>
+            <tr className="table-header">
+              <th className="col-timestamp">Time</th>
+              <th className="col-lottery">Sangam</th>
+              <th className="col-lottery">Chetak</th>
+              <th className="col-lottery">Super</th>
+              <th className="col-lottery">MP Deluxe</th>
+              <th className="col-lottery">Bhagya</th>
+              <th className="col-lottery">Diamond</th>
+              {adminMode && <th className="col-action">Action</th>}
+            </tr>
+          </thead>
+          <tbody className="table-body">
               {results.map((res) => (
-                <tr key={res.id} className="group hover:bg-white/[0.02] transition-colors">
-                  <td className="sticky-col !py-5 !px-6 leading-none">
+                <tr key={res.id} className="table-row">
+                  <td className="col-timestamp">
                     {editingId === res.id ? (
                       <TimeInput
                         value={editForm?.draw_time || ''}
                         onChange={(val) => setEditForm(prev => prev ? ({ ...prev, draw_time: val }) : null)}
                       />
                     ) : (
-                      <div className="flex items-center gap-3">
-                        <Clock size={12} className="opacity-20" />
-                        <span className="text-xs font-black text-white tracking-tight">{res.draw_time}</span>
-                      </div>
+                      <span className="font-mono font-bold">{res.draw_time}</span>
                     )}
                   </td>
                   {['sangam', 'chetak', 'super', 'mp_deluxe', 'bhagya_rekha', 'diamond'].map((key) => (
-                    <td key={key} className="!py-5 !px-4">
+                    <td key={key} className="col-lottery">
                       {editingId === res.id ? (
                         <input
                           type="text"
                           value={(editForm as any)?.[key]}
                           onChange={(e) => setEditForm(prev => prev ? ({ ...prev, [key]: e.target.value }) : null)}
-                          className="w-full min-w-[120px] lg:min-w-[75px] !px-3 !py-2 bg-black/60 border-white/10 rounded-lg text-xs text-center focus:border-white/30"
+                          className="w-full !px-2 !py-1 text-xs text-center"
                         />
                       ) : (
-                        <div className="text-sm font-mono font-bold text-white transition-opacity whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px] lg:max-w-[100px]">
-                          {(res as any)[key] || '--'}
-                        </div>
+                        <span className="font-mono text-sm font-bold">{(res as any)[key] || '--'}</span>
                       )}
                     </td>
                   ))}
                   {adminMode && (
-                    <td className="!py-5 !px-4">
-                      <div className="flex items-center force-button-gap">
+                    <td className="col-action">
+                      <div className="flex items-center gap-2 justify-center">
                         {editingId === res.id ? (
                           <>
-                            <button onClick={handleSave} title="Save" className="text-green-400 hover:scale-110 transition-all !p-2"><Check size={18} /></button>
-                            <button onClick={() => setEditingId(null)} title="Cancel" className="text-red-400 hover:scale-110 transition-all !p-2"><X size={18} /></button>
+                            <button onClick={handleSave} title="Save" className="text-green-400 hover:scale-110 transition-all !p-1"><Check size={16} /></button>
+                            <button onClick={() => setEditingId(null)} title="Cancel" className="text-red-400 hover:scale-110 transition-all !p-1"><X size={16} /></button>
                           </>
                         ) : (
                           <>
-                            <button onClick={() => handleEdit(res)} title="Edit" className="opacity-20 hover:opacity-100 hover:text-blue-400 transition-all !p-2"><Edit2 size={16} /></button>
-                            <button onClick={() => handleDelete(res.id!)} title="Delete" className="opacity-20 hover:opacity-100 hover:text-red-500 transition-all !p-2"><Trash2 size={16} /></button>
+                            <button onClick={() => handleEdit(res)} title="Edit" className="opacity-40 hover:opacity-100 hover:text-blue-400 transition-all !p-1"><Edit2 size={14} /></button>
+                            <button onClick={() => handleDelete(res.id!)} title="Delete" className="opacity-40 hover:opacity-100 hover:text-red-500 transition-all !p-1"><Trash2 size={14} /></button>
                           </>
                         )}
                       </div>
@@ -140,8 +137,8 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
                 </tr>
               ))}
               {editingId === 'new' && (
-                <tr className="bg-white/[0.05] animate-in fade-in slide-in-from-top-4">
-                  <td className="sticky-col !py-6 !px-6 leading-none">
+                <tr className="table-row bg-white/[0.05]">
+                  <td className="col-timestamp">
                     <TimeInput
                       value={editForm?.draw_time || ''}
                       onChange={(val) => setEditForm(prev => prev ? ({ ...prev, draw_time: val }) : null)}
@@ -149,27 +146,26 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
                     />
                   </td>
                   {['sangam', 'chetak', 'super', 'mp_deluxe', 'bhagya_rekha', 'diamond'].map((key) => (
-                    <td key={key} className="!py-6 !px-4">
+                    <td key={key} className="col-lottery">
                       <input
                         type="text"
                         placeholder="--"
                         value={(editForm as any)?.[key]}
                         onChange={(e) => setEditForm(prev => prev ? ({ ...prev, [key]: e.target.value }) : null)}
-                        className="w-full min-w-[120px] lg:min-w-[75px] !px-3 !py-2 bg-black/70 border-white/20 rounded-lg text-xs text-center"
+                        className="w-full !px-2 !py-1 text-xs text-center"
                       />
                     </td>
                   ))}
-                  <td className="!py-6 !px-4">
-                    <div className="flex items-center force-button-gap">
-                      <button onClick={handleSave} className="text-green-400 hover:scale-110 transition-all !p-2 bg-white/5 rounded-full"><Check size={20} /></button>
-                      <button onClick={() => setEditingId(null)} className="text-red-400 hover:scale-110 transition-all !p-2 bg-white/5 rounded-full"><X size={20} /></button>
+                  <td className="col-action">
+                    <div className="flex items-center gap-2 justify-center">
+                      <button onClick={handleSave} className="text-green-400 hover:scale-110 transition-all !p-1 bg-white/5 rounded-full"><Check size={16} /></button>
+                      <button onClick={() => setEditingId(null)} className="text-red-400 hover:scale-110 transition-all !p-1 bg-white/5 rounded-full"><X size={16} /></button>
                     </div>
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
-        </div>
       </div>
       
       {adminMode && editingId !== 'new' && (
