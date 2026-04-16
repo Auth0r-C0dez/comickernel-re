@@ -1,7 +1,8 @@
 import { isAdmin, getResults } from './actions';
 import ResultTable from '@/components/ResultTable';
-import AdminPortal from '@/components/AdminPortal';
-import VisitorId from '@/components/VisitorId';
+import PageFooter from '@/components/PageFooter';
+import DateResetHandler from '@/components/DateResetHandler';
+import { ThemeToggle } from '@/components/ThemeProvider';
 import { Search, Database, AlertTriangle } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -34,15 +35,21 @@ export default async function Home({
     results = await getResults(selectedDate);
     
     return (
-      <main className="min-h-screen pb-24">
+      <main className="min-h-screen pb-24 w-screen overflow-x-hidden">
+        <DateResetHandler />
         <div className="container py-10">
 
           {/* Header */}
-          <header className="flex flex-col items-center text-center mb-2">
-            <h1 className="uppercase tracking-tight leading-none">Play India Lottery</h1>
-            <p className="text-secondary opacity-50 max-w-md mx-auto mt-1 text-xs">
-              Daily Result Chart
-            </p>
+          <header className="flex items-center justify-between mb-2">
+            <div className="flex flex-col items-center text-center flex-1">
+              <h1 className="uppercase tracking-tight leading-none">Play India Lottery</h1>
+              <p className="text-secondary opacity-50 max-w-md mx-auto mt-1 text-xs">
+                Daily Result Chart
+              </p>
+            </div>
+            <div className="absolute top-6 right-6">
+              <ThemeToggle />
+            </div>
           </header>
 
           <div className="force-spacer" />
@@ -111,20 +118,7 @@ export default async function Home({
           <div className="force-spacer" />
 
           {/* Footer */}
-          <footer className="fixed bottom-0 left-0 right-0 glass border-t border-white/5 !py-2 z-40" style={{ borderRadius: 0 }}>
-            <div className="container flex justify-between items-center gap-4 flex-wrap">
-              <div className="flex items-center gap-2">
-                <div className="w-1 h-1 rounded-full bg-green-500/60" />
-                <span className="text-[9px] uppercase font-bold tracking-widest opacity-30">Live</span>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <VisitorId />
-                <div className="h-3 w-[1px] bg-white/10" />
-                <AdminPortal isAdmin={admin} />
-              </div>
-            </div>
-          </footer>
+          <PageFooter isAdmin={admin} />
         </div>
       </main>
     );
