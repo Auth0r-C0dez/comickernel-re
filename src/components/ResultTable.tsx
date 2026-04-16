@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { upsertResult, deleteResult } from '@/app/actions';
 import type { LotteryResult } from '@/lib/db';
 import { Trash2, Edit2, Check, X, Plus, Clock } from 'lucide-react';
+import TimeInput from './TimeInput';
 
 interface Props {
   initialResults: LotteryResult[];
@@ -15,10 +16,22 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
   const [results, setResults] = useState(initialResults);
   const [editingId, setEditingId] = useState<number | 'new' | null>(null);
   const [editForm, setEditForm] = useState<LotteryResult | null>(null);
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
 
   useEffect(() => {
     setResults(initialResults);
   }, [initialResults]);
+
+  // Handle swipe gestures for mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    setTouchEnd(e.changedTouches[0].clientX);
+  };
 
   const handleEdit = (res: LotteryResult) => {
     setEditingId(res.id || null);
@@ -58,7 +71,12 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
 
   return (
     <div className="space-y-6">
-      <div className="glass overflow-hidden !p-0">
+      <div 
+        className="glass overflow-hidden !p-0"
+        ref={tableContainerRef}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <div className="scroll-lock scrollbar-hide">
           <table className="w-full text-left border-collapse table-auto min-w-max">
             <thead>
@@ -75,11 +93,9 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
                 <tr key={res.id} className="group hover:bg-white/[0.02] transition-colors">
                   <td className="sticky-col !py-5 !px-6 leading-none">
                     {editingId === res.id ? (
-                      <input
-                        type="text"
-                        value={editForm?.draw_time}
-                        onChange={(e) => setEditForm(prev => prev ? ({ ...prev, draw_time: e.target.value }) : null)}
-                        className="w-full min-w-[90px] !px-3 !py-2 bg-black/60 border-white/10 rounded-lg text-xs font-bold focus:border-white/30"
+                      <TimeInput
+                        value={editForm?.draw_time || ''}
+                        onChange={(val) => setEditForm(prev => prev ? ({ ...prev, draw_time: val }) : null)}
                       />
                     ) : (
                       <div className="flex items-center gap-3">
@@ -126,12 +142,10 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
               {editingId === 'new' && (
                 <tr className="bg-white/[0.05] animate-in fade-in slide-in-from-top-4">
                   <td className="sticky-col !py-6 !px-6 leading-none">
-                    <input
-                      type="text"
+                    <TimeInput
+                      value={editForm?.draw_time || ''}
+                      onChange={(val) => setEditForm(prev => prev ? ({ ...prev, draw_time: val }) : null)}
                       placeholder="HH:MM AM"
-                      value={editForm?.draw_time}
-                      onChange={(e) => setEditForm(prev => prev ? ({ ...prev, draw_time: e.target.value }) : null)}
-                      className="w-full min-w-[90px] !px-3 !py-2 bg-black/70 border-white/20 rounded-lg text-xs font-bold"
                     />
                   </td>
                   {['sangam', 'chetak', 'super', 'mp_deluxe', 'bhagya_rekha', 'diamond'].map((key) => (
@@ -169,3 +183,4 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
     </div>
   );
 }
+
