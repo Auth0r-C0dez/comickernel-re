@@ -221,7 +221,7 @@ table {
 }
 
 .table-header th {
-  padding: 16px 12px;
+  padding: 12px 8px;
   text-align: center;
   font-size: 0.75rem;
   font-weight: 700;
@@ -230,6 +230,11 @@ table {
   color: var(--text-secondary);
   white-space: nowrap;
   display: table-cell;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table-header th:last-child {
+  border-right: none;
 }
 
 .table-body tr {
@@ -242,46 +247,51 @@ table {
 }
 
 .table-body td {
-  padding: 14px 12px;
+  padding: 10px 8px;
   text-align: center;
   vertical-align: middle;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.table-body td:last-child {
+  border-right: none;
 }
 
 /* Column Sizing */
 .col-timestamp {
-  width: 14%;
-  min-width: 120px;
+  width: 12%;
+  min-width: 90px;
   font-weight: 600;
 }
 
 .col-lottery {
-  width: 12.85%;
-  min-width: 100px;
+  width: 12%;
+  min-width: 80px;
   font-family: 'Courier New', monospace;
   font-weight: 600;
 }
 
 .col-action {
-  width: 10%;
-  min-width: 90px;
+  width: 9%;
+  min-width: 75px;
 }
 
 /* Responsive on tablets */
 @media (max-width: 1200px) {
   .table-header th,
   .table-body td {
-    padding: 12px 10px;
+    padding: 10px 7px;
     font-size: 0.85rem;
   }
   
   .col-timestamp {
-    width: 15%;
-    min-width: 100px;
+    width: 13%;
+    min-width: 80px;
   }
   
   .col-lottery {
-    width: 13%;
-    min-width: 85px;
+    width: 12%;
+    min-width: 75px;
   }
 }
 
@@ -289,23 +299,23 @@ table {
 @media (max-width: 768px) {
   .table-header th,
   .table-body td {
-    padding: 10px 8px;
-    font-size: 0.75rem;
+    padding: 8px 6px;
+    font-size: 0.7rem;
   }
   
   .col-timestamp {
-    width: 18%;
-    min-width: 80px;
+    width: 16%;
+    min-width: 70px;
   }
   
   .col-lottery {
     width: 13%;
-    min-width: 70px;
+    min-width: 65px;
   }
   
   .col-action {
-    width: 12%;
-    min-width: 70px;
+    width: 11%;
+    min-width: 60px;
   }
 }
 
@@ -328,11 +338,12 @@ input, select {
 /* Table input overrides */
 .table-body input,
 .table-body input[type="text"] {
-  padding: 0.4rem 0.6rem !important;
-  font-size: 0.8rem !important;
+  padding: 0.3rem 0.4rem !important;
+  font-size: 0.75rem !important;
   background: rgba(0, 0, 0, 0.4) !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   color: var(--input-text) !important;
+  width: 100% !important;
 }
 
 .table-body input:focus,
