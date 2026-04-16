@@ -136,9 +136,9 @@ export default function TimeInput({ value, onChange, placeholder = "HH:MM AM" }:
   };
 
   return (
-    <div className="w-full flex flex-col gap-1 sm:gap-2">
-      <div className="flex flex-col sm:flex-row gap-1 sm:gap-2 items-center">
-        <div className="flex items-center gap-1">
+    <div className="w-full">
+      <div className="flex flex-row gap-0.5 items-center justify-center">
+        <div className="flex items-center gap-0.5">
           <input
             type="text"
             inputMode="numeric"
@@ -146,9 +146,9 @@ export default function TimeInput({ value, onChange, placeholder = "HH:MM AM" }:
             value={hour}
             onChange={handleHourChange}
             placeholder="HH"
-            className="w-7 sm:w-9 !px-0.5 !py-0.5 text-center text-[8px] sm:text-[10px] font-bold bg-black/60 border-white/10 rounded focus:border-white/30"
+            className="w-4 sm:w-5 !px-0 !py-0.5 text-center text-[7px] sm:text-[8.5px] font-black bg-black/60 border-white/10 rounded focus:border-white/30"
           />
-          <span className="text-[8px] font-bold opacity-30">:</span>
+          <span className="text-[6.5px] font-black opacity-30">:</span>
           <input
             type="text"
             inputMode="numeric"
@@ -156,16 +156,16 @@ export default function TimeInput({ value, onChange, placeholder = "HH:MM AM" }:
             value={minute}
             onChange={handleMinuteChange}
             placeholder="MM"
-            className="w-7 sm:w-9 !px-0.5 !py-0.5 text-center text-[8px] sm:text-[10px] font-bold bg-black/60 border-white/10 rounded focus:border-white/30"
+            className="w-4 sm:w-5 !px-0 !py-0.5 text-center text-[7px] sm:text-[8.5px] font-black bg-black/60 border-white/10 rounded focus:border-white/30"
           />
         </div>
 
-        <div className="flex gap-0.5 bg-black/40 p-0.5 rounded border border-white/10">
+        <div className="flex gap-0 bg-black/40 p-0.5 rounded border border-white/10">
           {(['AM', 'PM'] as const).map((p) => (
             <button
               key={p}
               onClick={() => handlePeriodChange(p)}
-              className={`px-1 py-0.5 text-[8.5px] sm:text-[10px] font-bold rounded transition-all ${
+              className={`px-0.5 py-0.5 text-[7px] sm:text-[9px] font-black rounded transition-all ${
                 period === p
                   ? 'bg-white/20 text-white'
                   : 'text-white/50 hover:text-white'

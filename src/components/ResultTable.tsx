@@ -5,6 +5,43 @@ import { upsertResult, deleteResult } from '@/app/actions';
 import type { LotteryResult } from '@/lib/db';
 import { Trash2, Edit2, Check, X, Plus, Clock, Search } from 'lucide-react';
 
+// Compact inline time editor — stays within column width
+function CompactTimeEdit({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  // Parse "HH:MM AM" into parts
+  const parts = (value || '').match(/(\d{0,2}):?(\d{0,2})\s*(AM|PM)?/i);
+  const hh = parts?.[1] || '';
+  const mm = parts?.[2] || '';
+  const ampm = parts?.[3]?.toUpperCase() || 'AM';
+
+  const update = (h: string, m: string, p: string) => {
+    onChange(`${h}:${m} ${p}`);
+  };
+
+  const fieldStyle: React.CSSProperties = {
+    width: '1.4rem', padding: '0.1rem', fontSize: '0.5rem', fontWeight: 700,
+    textAlign: 'center', borderRadius: '0.15rem', border: '1px solid var(--border)',
+    background: 'var(--accent)', boxShadow: 'none', minWidth: 0, outline: 'none',
+    color: 'var(--text-primary)',
+  };
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.1rem', overflow: 'hidden', flexWrap: 'nowrap' }}>
+      <input type="text" maxLength={2} value={hh} placeholder="HH"
+        onChange={(e) => update(e.target.value.replace(/\D/g, '').slice(0, 2), mm, ampm)}
+        style={fieldStyle} />
+      <span style={{ fontSize: '0.45rem', fontWeight: 700, opacity: 0.4, lineHeight: 1 }}>:</span>
+      <input type="text" maxLength={2} value={mm} placeholder="MM"
+        onChange={(e) => update(hh, e.target.value.replace(/\D/g, '').slice(0, 2), ampm)}
+        style={fieldStyle} />
+      <select value={ampm} onChange={(e) => update(hh, mm, e.target.value)}
+        style={{ ...fieldStyle, width: '2rem', fontSize: '0.42rem', appearance: 'none', WebkitAppearance: 'none', cursor: 'pointer' }}>
+        <option value="AM">AM</option>
+        <option value="PM">PM</option>
+      </select>
+    </div>
+  );
+}
+
 interface Props {
   initialResults: LotteryResult[];
   date: string;
@@ -77,17 +114,14 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
                 <tr key={res.id} className="group transition-colors" style={{ borderBottom: '1px solid var(--table-border)' }}>
                   <td style={{ padding: '0.5rem 0.25rem', borderLeft: '1px solid var(--table-border)', borderRight: '1px solid var(--table-border)', minWidth: 0, overflow: 'hidden', lineHeight: 1 }}>
                     {editingId === res.id ? (
-                      <input
-                        type="text"
+                      <CompactTimeEdit
                         value={editForm?.draw_time || ''}
-                        onChange={(e) => setEditForm(prev => prev ? ({ ...prev, draw_time: e.target.value }) : null)}
-                        placeholder="HH:MM AM"
-                        style={{ padding: '0.15rem 0.1rem', fontSize: '0.55rem', minWidth: 0, maxWidth: '100%', width: '100%', textAlign: 'center', borderRadius: '0.2rem', border: '1px solid var(--border)', background: 'var(--accent)', boxShadow: 'none' }}
+                        onChange={(val) => setEditForm(prev => prev ? ({ ...prev, draw_time: val }) : null)}
                       />
                     ) : (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.2rem', overflow: 'hidden' }}>
-                      <Clock size={7} className="hidden sm:block" style={{ opacity: 0.15, flexShrink: 0 }} />
-                      <span style={{ fontSize: 'clamp(0.5rem, 1.8vw, 0.7rem)', fontWeight: 900, letterSpacing: '-0.03em', whiteSpace: 'nowrap', lineHeight: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.15rem', overflow: 'hidden' }}>
+                      <Clock size={6} className="hidden sm:block" style={{ opacity: 0.12, flexShrink: 0 }} />
+                      <span style={{ fontSize: 'clamp(0.5rem, 1.3vw, 0.68rem)', fontWeight: 800, fontFamily: 'monospace', letterSpacing: '-0.02em', whiteSpace: 'nowrap', lineHeight: 1 }}>
                         {res.draw_time}
                       </span>
                     </div>
@@ -103,7 +137,7 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
                           style={{ padding: '0.15rem 0.1rem', fontSize: '0.5rem', width: '100%', minWidth: 0, maxWidth: '100%', textAlign: 'center', borderRadius: '0.2rem', border: '1px solid var(--border)', background: 'var(--accent)' }}
                         />
                       ) : (
-                        <div style={{ fontSize: 'clamp(0.45rem, 1.2vw, 0.65rem)', fontFamily: 'monospace', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <div style={{ fontSize: 'clamp(0.5rem, 1.3vw, 0.68rem)', fontFamily: 'monospace', fontWeight: 800, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'center' }}>
                           {(res as any)[key] || '--'}
                         </div>
                       )}
@@ -130,13 +164,10 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
               ))}
               {editingId === 'new' && (
                 <tr className="bg-white/[0.05] animate-in fade-in slide-in-from-top-4 divide-x divide-white/5">
-                  <td className="!py-3 !px-1 leading-none border-l border-white/5 min-w-0 overflow-hidden">
-                    <input
-                      type="text"
+                  <td style={{ padding: '0.5rem 0.25rem', borderLeft: '1px solid var(--table-border)', borderRight: '1px solid var(--table-border)', minWidth: 0, overflow: 'hidden', lineHeight: 1 }}>
+                    <CompactTimeEdit
                       value={editForm?.draw_time || ''}
-                      onChange={(e) => setEditForm(prev => prev ? ({ ...prev, draw_time: e.target.value }) : null)}
-                      placeholder="HH:MM AM"
-                      style={{ padding: '0.15rem 0.1rem', fontSize: '0.5rem', width: '100%', minWidth: 0, maxWidth: '100%', textAlign: 'center', borderRadius: '0.2rem', border: '1px solid var(--border)', background: 'var(--accent)' }}
+                      onChange={(val) => setEditForm(prev => prev ? ({ ...prev, draw_time: val }) : null)}
                     />
                   </td>
                   {['sangam', 'chetak', 'super', 'mp_deluxe', 'bhagya_rekha', 'diamond'].map((key) => (
@@ -163,14 +194,35 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
           </table>
         </div>
       </div>
+
       
       {adminMode && editingId !== 'new' && (
-        <button
-          onClick={handleNew}
-          className="btn btn-ghost w-full !py-3 border-dashed border-white/10 hover:border-white/20 text-[11px] font-bold tracking-widest opacity-60 hover:opacity-100 mt-2"
-        >
-          <Plus size={14} className="mr-2" /> Add New Row
-        </button>
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '0.5rem' }}>
+          <button
+            onClick={handleNew}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.3rem',
+              padding: '0.3rem 0.85rem',
+              fontSize: '0.5rem',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              borderRadius: '999px',
+              border: '1px dashed var(--border-strong)',
+              background: 'transparent',
+              color: 'var(--text-primary)',
+              opacity: 0.4,
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.background = 'var(--accent)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.4'; e.currentTarget.style.background = 'transparent'; }}
+          >
+            <Plus size={10} /> Add Row
+          </button>
+        </div>
       )}
     </div>
   );
