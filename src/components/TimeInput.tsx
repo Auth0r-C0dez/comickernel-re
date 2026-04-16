@@ -136,9 +136,8 @@ export default function TimeInput({ value, onChange, placeholder = "HH:MM AM" }:
   };
 
   return (
-    <div className="w-full flex flex-col gap-3">
-      {/* Input controls */}
-      <div className="flex gap-2 items-center flex-wrap">
+    <div className="w-full flex flex-col gap-1 sm:gap-2">
+      <div className="flex flex-col sm:flex-row gap-1 sm:gap-2 items-center">
         <div className="flex items-center gap-1">
           <input
             type="text"
@@ -147,9 +146,9 @@ export default function TimeInput({ value, onChange, placeholder = "HH:MM AM" }:
             value={hour}
             onChange={handleHourChange}
             placeholder="HH"
-            className="w-12 !px-2 !py-2 text-center text-xs font-bold bg-black/60 border-white/10 rounded-lg focus:border-white/30"
+            className="w-7 sm:w-9 !px-0.5 !py-0.5 text-center text-[8px] sm:text-[10px] font-bold bg-black/60 border-white/10 rounded focus:border-white/30"
           />
-          <span className="text-xs font-bold opacity-50">:</span>
+          <span className="text-[8px] font-bold opacity-30">:</span>
           <input
             type="text"
             inputMode="numeric"
@@ -157,16 +156,16 @@ export default function TimeInput({ value, onChange, placeholder = "HH:MM AM" }:
             value={minute}
             onChange={handleMinuteChange}
             placeholder="MM"
-            className="w-12 !px-2 !py-2 text-center text-xs font-bold bg-black/60 border-white/10 rounded-lg focus:border-white/30"
+            className="w-7 sm:w-9 !px-0.5 !py-0.5 text-center text-[8px] sm:text-[10px] font-bold bg-black/60 border-white/10 rounded focus:border-white/30"
           />
         </div>
 
-        <div className="flex gap-1 bg-black/40 p-1 rounded-lg border border-white/10">
+        <div className="flex gap-0.5 bg-black/40 p-0.5 rounded border border-white/10">
           {(['AM', 'PM'] as const).map((p) => (
             <button
               key={p}
               onClick={() => handlePeriodChange(p)}
-              className={`px-2 py-1 text-xs font-bold rounded transition-all ${
+              className={`px-1 py-0.5 text-[8.5px] sm:text-[10px] font-bold rounded transition-all ${
                 period === p
                   ? 'bg-white/20 text-white'
                   : 'text-white/50 hover:text-white'
@@ -177,22 +176,10 @@ export default function TimeInput({ value, onChange, placeholder = "HH:MM AM" }:
           ))}
         </div>
 
-        <input
-          type="text"
-          value={rawInput}
-          onChange={handleInputChange}
-          placeholder={placeholder}
-          className="flex-1 hidden sm:block !px-3 !py-2 text-xs font-mono bg-black/60 border-white/10 rounded-lg focus:border-white/30"
-        />
+        {/* Removed secondary raw input for compactness */}
       </div>
 
-      {/* Formatted time display rectangle */}
-      {formattedTime && (
-        <div className="w-full px-4 py-3 bg-gradient-to-r from-white/10 to-white/5 border border-white/20 rounded-lg text-center">
-          <p className="text-xs text-white/70 mb-1">Formatted Time</p>
-          <p className="text-lg font-bold text-white font-mono">{formattedTime}</p>
-        </div>
-      )}
+      {/* Removed formatted time display rectangle to prevent duplicate labels in table cells */}
     </div>
   );
 }

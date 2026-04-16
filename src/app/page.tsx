@@ -2,8 +2,8 @@ import { isAdmin, getResults } from './actions';
 import ResultTable from '@/components/ResultTable';
 import PageFooter from '@/components/PageFooter';
 import DateResetHandler from '@/components/DateResetHandler';
-import { ThemeToggle } from '@/components/ThemeProvider';
-import { Search, Database, AlertTriangle } from 'lucide-react';
+import Navbar from '@/components/Navbar';
+import { Search, Database, AlertTriangle, Calendar } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -35,79 +35,62 @@ export default async function Home({
     results = await getResults(selectedDate);
     
     return (
-      <main className="min-h-screen pb-24 w-screen overflow-x-hidden">
+      <main className="min-h-screen pb-24 w-screen overflow-x-hidden" style={{ paddingTop: '2.5rem' }}>
+        <Navbar />
         <DateResetHandler />
-        <div className="container py-10">
+        <div className="container" style={{ paddingTop: 'clamp(0.75rem, 2vw, 1.25rem)', paddingBottom: '2rem' }}>
 
-          {/* Header */}
-          <header className="flex items-center justify-between mb-2">
-            <div className="flex flex-col items-center text-center flex-1">
-              <h1 className="uppercase tracking-tight leading-none">Play India Lottery</h1>
-              <p className="text-secondary opacity-50 max-w-md mx-auto mt-1 text-xs">
-                Daily Result Chart
-              </p>
-            </div>
-            <div className="absolute top-6 right-6">
-              <ThemeToggle />
-            </div>
-          </header>
-
-          <div className="force-spacer" />
-
-          {/* Control Bar */}
-          <div className="glass control-bar !py-4 !px-5 flex flex-wrap items-center justify-between gap-6">
-            <div className="control-row flex items-center gap-4 flex-wrap">
-              <span className="text-[10px] font-bold text-secondary uppercase tracking-widest opacity-50">Select Date</span>
-              <form action="/" method="GET" className="flex items-center gap-3">
+          {/* Date Selector — Curvy Square */}
+          <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <form action="/" method="GET" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '0', borderRadius: '0.75rem', border: '1px solid var(--border-strong, var(--border))', background: 'var(--bg-card)', overflow: 'hidden', width: 'auto', maxWidth: '100%', flexWrap: 'nowrap', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', padding: '0.55rem 0.85rem', gap: '0.45rem', flexShrink: 1, minWidth: 0 }}>
+                <Calendar size={14} style={{ opacity: 0.35, flexShrink: 0 }} />
                 <input
                   type="date"
                   name="date"
                   defaultValue={selectedDate}
-                  className="!py-2 !px-3 text-xs font-mono"
+                  style={{ padding: '0', fontSize: '0.78rem', fontFamily: 'monospace', fontWeight: 600, background: 'transparent', border: 'none', outline: 'none', boxShadow: 'none', width: 'auto', minWidth: 0, color: 'var(--text-primary)', lineHeight: 1.2 }}
                 />
-                <button type="submit" className="btn btn-sm">
-                  <Search size={13} /> Search
-                </button>
-              </form>
-            </div>
-
-            <div className="hidden sm:flex items-center gap-2 bg-white/5 !px-3 !py-1 rounded-full border border-white/5">
-              <div className="w-1.5 h-1.5 rounded-full bg-green-500/60" />
-              <span className="text-[9px] font-mono opacity-40 uppercase tracking-widest">Connected</span>
-            </div>
+              </div>
+              <button
+                type="submit"
+                style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '0.55rem 0.85rem', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', background: 'var(--accent)', color: 'var(--button-text)', border: 'none', borderLeft: '1px solid var(--border)', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0, transition: 'background 0.2s' }}
+              >
+                <Search size={12} /> Go
+              </button>
+            </form>
           </div>
 
-          <div className="force-spacer" />
-
-          {/* Results Header */}
-          <div className="flex items-center justify-between !px-1 mb-3">
-            <div className="flex items-center gap-3">
-              <div className="h-[1px] w-6 bg-white/20" />
-              <h2 className="text-xs uppercase tracking-widest font-bold opacity-70">
-                Session — {selectedDate}
+          {/* Section Divider */}
+          <div className="flex items-center justify-between" style={{ padding: '0.75rem 0.25rem 0.5rem' }}>
+            <div className="flex items-center gap-2.5">
+              <div style={{ height: '1px', width: '1.5rem', background: 'var(--border-strong, var(--border))' }} />
+              <h2 style={{ fontSize: 'clamp(0.65rem, 1.5vw, 0.8rem)', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 800, opacity: 0.5, margin: 0 }}>
+                {selectedDate}
               </h2>
+              <div style={{ height: '1px', width: '1.5rem', background: 'var(--border-strong, var(--border))' }} />
             </div>
             {admin && (
-              <div className="flex items-center gap-2">
-                <span className="animate-pulse w-1.5 h-1.5 rounded-full bg-red-500" />
-                <span className="text-[9px] font-bold text-red-400 uppercase tracking-widest">Admin Mode</span>
+              <div className="flex items-center gap-1.5">
+                <span className="animate-pulse rounded-full" style={{ width: '0.4rem', height: '0.4rem', background: '#ef4444' }} />
+                <span style={{ fontSize: '0.55rem', fontWeight: 700, color: '#ef4444', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Admin</span>
               </div>
             )}
           </div>
 
           {/* Data Table */}
-          <section className="relative">
+          <section className="relative animate-fade-up">
             {results.length > 0 ? (
               <ResultTable initialResults={results} date={selectedDate} adminMode={admin} />
             ) : (
-              <div className="glass !py-14 text-center">
-                <div className="flex justify-center mb-4 opacity-10">
-                  <Database size={40} />
+              <div className="glass text-center" style={{ padding: '3rem 1.5rem' }}>
+                <div className="flex justify-center" style={{ marginBottom: '1rem', opacity: 0.08 }}>
+                  <Database size={36} />
                 </div>
-                <p className="text-secondary text-sm opacity-40 font-bold">No sequences confirmed for {selectedDate}</p>
-                <p className="text-[10px] text-secondary opacity-20 mt-2 uppercase tracking-widest">Verification Status: Queried Successfully</p>
+                <p style={{ fontSize: '0.8rem', fontWeight: 700, opacity: 0.35 }}>No results for {selectedDate}</p>
+                <p style={{ fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.15em', opacity: 0.15, marginTop: '0.5rem' }}>Awaiting data feed</p>
                 {admin && (
-                  <div className="mt-8">
+                  <div style={{ marginTop: '2rem' }}>
                     <ResultTable initialResults={[]} date={selectedDate} adminMode={admin} />
                   </div>
                 )}
@@ -124,13 +107,13 @@ export default async function Home({
     );
   } catch (e: any) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-10 font-mono text-xs text-red-500 text-center">
-        <div className="space-y-4 max-w-sm">
-          <AlertTriangle size={48} className="mx-auto" />
-          <h2 className="text-sm font-bold uppercase tracking-widest">Critical Execution Error</h2>
-          <p className="opacity-60">{e.message}</p>
-          <div className="pt-4 border-t border-red-900/30">
-            <a href="/" className="btn btn-sm text-white border-red-900 bg-red-900/20">Attempt Recovery</a>
+      <div className="min-h-screen flex items-center justify-center" style={{ padding: '2rem', fontFamily: 'monospace', fontSize: '0.75rem', color: '#ef4444', textAlign: 'center', background: '#050505' }}>
+        <div style={{ maxWidth: '22rem' }}>
+          <AlertTriangle size={40} style={{ margin: '0 auto 1rem' }} />
+          <h2 style={{ fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.15em' }}>System Error</h2>
+          <p style={{ opacity: 0.5, marginTop: '0.5rem' }}>{e.message}</p>
+          <div style={{ paddingTop: '1rem', marginTop: '1rem', borderTop: '1px solid rgba(239,68,68,0.15)' }}>
+            <a href="/" className="btn btn-sm" style={{ color: 'white', borderColor: 'rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.1)' }}>Retry</a>
           </div>
         </div>
       </div>

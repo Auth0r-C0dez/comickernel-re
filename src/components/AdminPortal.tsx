@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { loginAdmin, logoutAdmin } from '@/app/actions';
-import { LogOut } from 'lucide-react';
+import { LogOut, Lock, X as XIcon } from 'lucide-react';
 
 export default function AdminPortal({ isAdmin }: { isAdmin: boolean }) {
   const [showLogin, setShowLogin] = useState(false);
@@ -59,8 +59,26 @@ export default function AdminPortal({ isAdmin }: { isAdmin: boolean }) {
 
   if (isAdmin) {
     return (
-      <button onClick={() => logoutAdmin()} className="btn btn-sm !px-3 font-bold text-red-500 hover:bg-red-500/10 border-red-500/20">
-        Log Out
+      <button
+        onClick={() => logoutAdmin()}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '0.3rem',
+          padding: '0.25rem 0.6rem',
+          fontSize: '0.55rem',
+          fontWeight: 700,
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em',
+          color: '#ef4444',
+          background: 'rgba(239,68,68,0.06)',
+          border: '1px solid rgba(239,68,68,0.15)',
+          borderRadius: '0.35rem',
+          cursor: 'pointer',
+          transition: 'all 0.2s',
+        }}
+      >
+        <LogOut size={10} /> Log Out
       </button>
     );
   }
@@ -68,28 +86,120 @@ export default function AdminPortal({ isAdmin }: { isAdmin: boolean }) {
   return (
     <>
       {showLogin && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-xl flex items-center justify-center z-50 p-6">
-          <div className="glass max-w-sm w-full !p-8 space-y-8 animate-in zoom-in-95 duration-300">
-            <div className="text-center space-y-2">
-              <h2 className="text-lg font-black uppercase tracking-[0.2em] text-white">Security Override</h2>
-              <p className="text-[10px] text-secondary opacity-50 uppercase tracking-widest">Identification Required</p>
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 50,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1.5rem',
+            background: 'rgba(0,0,0,0.85)',
+            backdropFilter: 'blur(12px)',
+          }}
+        >
+          <div
+            style={{
+              width: '100%',
+              maxWidth: '22rem',
+              background: 'var(--bg-card, rgba(20,20,20,0.9))',
+              border: '1px solid var(--border)',
+              borderRadius: '1rem',
+              padding: '2rem 1.75rem',
+              boxShadow: '0 24px 48px rgba(0,0,0,0.4)',
+            }}
+          >
+            {/* Close button */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+              <button
+                onClick={() => setShowLogin(false)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', opacity: 0.3, color: 'var(--text-primary, #fff)', padding: '0.25rem' }}
+              >
+                <XIcon size={16} />
+              </button>
             </div>
-            
+
+            {/* Header */}
+            <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.75rem' }}>
+                <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '0.6rem', background: 'var(--accent, rgba(255,255,255,0.05))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Lock size={16} style={{ opacity: 0.5 }} />
+                </div>
+              </div>
+              <h2 style={{ fontSize: '0.9rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.12em', margin: '0 0 0.3rem' }}>
+                Admin Access
+              </h2>
+              <p style={{ fontSize: '0.55rem', opacity: 0.35, textTransform: 'uppercase', letterSpacing: '0.12em', fontWeight: 600 }}>
+                Enter credentials to continue
+              </p>
+            </div>
+
+            {/* Input */}
             <input
               type="password"
-              placeholder="Enter Access Key"
-              className="w-full !py-3 !px-4 bg-white/5 border-white/10 rounded-lg text-center tracking-[0.5em] focus:border-white/30"
+              placeholder="Access Key"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
               autoFocus
+              style={{
+                width: '100%',
+                padding: '0.65rem 0.85rem',
+                fontSize: '0.8rem',
+                fontFamily: 'monospace',
+                letterSpacing: '0.2em',
+                textAlign: 'center',
+                background: 'var(--accent, rgba(255,255,255,0.03))',
+                border: '1px solid var(--border-strong, rgba(255,255,255,0.1))',
+                borderRadius: '0.5rem',
+                color: 'var(--text-primary, #fff)',
+                outline: 'none',
+                boxShadow: 'none',
+                marginBottom: '1rem',
+              }}
             />
 
-            <div className="flex gap-4">
-              <button onClick={handleLogin} disabled={loading} className="btn flex-1 bg-white text-black border-white hover:bg-white/90">
-                {loading ? 'Logging in...' : 'Log In'}
+            {/* Buttons */}
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                onClick={handleLogin}
+                disabled={loading}
+                style={{
+                  flex: 1,
+                  padding: '0.55rem',
+                  fontSize: '0.65rem',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  background: 'var(--text-primary, #fff)',
+                  color: 'var(--bg-deep, #000)',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  cursor: 'pointer',
+                  transition: 'opacity 0.2s',
+                  opacity: loading ? 0.5 : 1,
+                }}
+              >
+                {loading ? 'Verifying...' : 'Log In'}
               </button>
-              <button onClick={() => setShowLogin(false)} className="btn btn-ghost flex-1 border-white/10 hover:bg-white/5">
+              <button
+                onClick={() => setShowLogin(false)}
+                style={{
+                  flex: 1,
+                  padding: '0.55rem',
+                  fontSize: '0.65rem',
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  background: 'transparent',
+                  color: 'var(--text-primary, #fff)',
+                  border: '1px solid var(--border)',
+                  borderRadius: '0.5rem',
+                  cursor: 'pointer',
+                  opacity: 0.5,
+                }}
+              >
                 Cancel
               </button>
             </div>
