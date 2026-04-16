@@ -251,6 +251,8 @@ table {
   text-align: center;
   vertical-align: middle;
   border-right: 1px solid rgba(255, 255, 255, 0.05);
+  FIX
+  font-weight: 800;
 }
 
 .table-body td:last-child {
@@ -301,6 +303,8 @@ table {
   .table-body td {
     padding: 8px 6px;
     font-size: 0.7rem;
+    FIX
+    font-weight: 800;
   }
   
   .col-timestamp {
