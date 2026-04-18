@@ -5,6 +5,21 @@ import { upsertResult, deleteResult } from '@/app/actions';
 import type { LotteryResult } from '@/lib/db';
 import { Trash2, Edit2, Check, X, Plus, Clock, Search } from 'lucide-react';
 
+const timeToMinutes = (timeStr: string) => {
+  if (!timeStr) return 9999;
+  const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+  if (!match) return 9999;
+  
+  let h = parseInt(match[1], 10);
+  const m = parseInt(match[2], 10);
+  const isPM = match[3].toUpperCase() === 'PM';
+  
+  if (isPM && h !== 12) h += 12;
+  if (!isPM && h === 12) h = 0;
+  
+  return h * 60 + m;
+};
+
 // Compact inline time editor — stays within column width
 function CompactTimeEdit({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   // Parse "HH:MM AM" into parts
@@ -56,6 +71,10 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
   useEffect(() => {
     setResults(initialResults);
   }, [initialResults]);
+
+  const sortedResults = [...results].sort((a, b) => 
+    timeToMinutes(a.draw_time) - timeToMinutes(b.draw_time)
+  );
 
   const handleEdit = (res: LotteryResult) => {
     setEditingId(res.id || null);
@@ -110,7 +129,7 @@ export default function ResultTable({ initialResults, date, adminMode }: Props) 
               </tr>
             </thead>
             <tbody>
-              {results.map((res, idx) => (
+              {sortedResults.map((res, idx) => (
                 <tr key={res.id} className="group transition-colors" style={{ borderBottom: '1px solid var(--table-border)' }}>
                   <td style={{ padding: '0.5rem 0.25rem', borderLeft: '1px solid var(--table-border)', borderRight: '1px solid var(--table-border)', minWidth: 0, overflow: 'hidden', lineHeight: 1 }}>
                     {editingId === res.id ? (
