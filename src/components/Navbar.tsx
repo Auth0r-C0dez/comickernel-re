@@ -42,11 +42,8 @@ export default function Navbar() {
       >
         {/* Left — Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <span style={{ fontSize: '0.7rem',paddingLeft: '0.25rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '-0.02em' }}>
-            Play India
-          </span>
-          <span style={{ fontSize: '0.45rem', fontWeight: 600, opacity: 0.3, textTransform: 'uppercase', letterSpacing: '0.1em', marginLeft: '0.25rem' }}>
-            Results
+          <span style={{ fontSize: '0.7rem', paddingLeft: '0.25rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '-0.02em' }}>
+            Daily Ending
           </span>
         </div>
 
